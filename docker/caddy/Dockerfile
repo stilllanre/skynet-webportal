@@ -7,4 +7,4 @@ FROM caddy:2.3.0
 
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
 
-CMD ["caddy", "run", "--config", "/etc/caddy/config.json", "--adapter", "json"]
+CMD ["caddy", "run", "--config", "/etc/caddy/config.json"]
