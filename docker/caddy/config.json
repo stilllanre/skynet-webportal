@@ -4,7 +4,6 @@
       "automation": {
         "policies": [
           {
-            "ca": "https://acme-staging-v02.api.letsencrypt.org/directory",
             "subjects": ["*.hns.siasky.xyz", "*.siasky.xyz", "siasky.xyz"],
             "issuers": [
               {
@@ -13,6 +12,7 @@
                     "provider": { "max_retries": 50, "name": "route53" }
                   }
                 },
+                "ca": "https://acme-staging-v02.api.letsencrypt.org/directory",
                 "module": "acme"
               }
             ]
