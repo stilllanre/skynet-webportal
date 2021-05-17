@@ -1,0 +1,25 @@
+{
+  "apps": {
+    "tls": {
+      "automation": {
+        "policies": [
+          {
+            "ca": "https://acme-staging-v02.api.letsencrypt.org/directory",
+            "subjects": ["*.hns.siasky.xyz", "*.siasky.xyz", "siasky.xyz"],
+            "issuers": [
+              {
+                "challenges": {
+                  "dns": {
+                    "provider": { "max_retries": 50, "name": "route53" }
+                  }
+                },
+                "module": "acme"
+              }
+            ]
+          },
+          { "issuers": [{ "module": "internal" }], "on_demand": true }
+        ]
+      }
+    }
+  }
+}

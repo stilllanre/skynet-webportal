@@ -47,13 +47,10 @@ services:
     volumes:
       - ./docker/data/caddy/data:/data
       - ./docker/data/caddy/config:/config
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./docker/caddy/config.json:/etc/caddy/config.json
     networks:
       shared:
         ipv4_address: 10.10.10.20
-    ports:
-      - "80:80"
-      - "443:443"
     depends_on:
       - nginx
 
@@ -73,11 +70,13 @@ services:
       - ./docker/data/nginx/logs:/usr/local/openresty/nginx/logs
       - ./docker/data/nginx/skynet:/data/nginx/skynet:ro
       - ./docker/data/sia/apipassword:/data/sia/apipassword:ro
+      - ./docker/data/caddy/data:/data/nginx/certificates
     networks:
       shared:
         ipv4_address: 10.10.10.30
-    expose:
-      - 80
+    ports:
+      - "80:80"
+      - "443:443"
     depends_on:
       - sia
       - handshake-api
