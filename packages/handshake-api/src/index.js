@@ -2,6 +2,7 @@ const express = require("express");
 const punycode = require("punycode");
 const NodeCache = require("node-cache");
 const { NodeClient } = require("hs-client");
+const { SkynetClient, parseSkylink } = require("skynet-js");
 
 const host = process.env.HOSTNAME || "0.0.0.0";
 const port = Number(process.env.PORT) || 3100;
@@ -19,6 +20,8 @@ const clientOptions = {
 };
 const client = new NodeClient(clientOptions);
 const cache = new NodeCache({ stdTTL: 300 }); // cache for 5 minutes
+
+const skynetClient = new SkynetClient();
 
 // Match both `sia://HASH` and `HASH` links.
 const startsWithSkylinkRegExp = /^(sia:\/\/)?[a-zA-Z0-9_-]{46}/;
@@ -94,9 +97,22 @@ function isValidRegistryEntry(value) {
   return Boolean(value && value.match(registryEntryRegExp));
 }
 
+const resolveRegistryEntryToSkylink = async (req, res) => {
+  try {
+    const skylink = await skynetClient.registry.getEntryLink(req.params.publickey, req.params.datakey);
+
+    console.log(`skyns://${req.params.publickey}/${req.params.datakey} => ${skylink}`);
+
+    return res.json({ skylink: parseSkylink(skylink) });
+  } catch (error) {
+    res.status(500).send(`Skylink conversion error: ${error.message}`);
+  }
+};
+
 const server = express();
 
 server.get("/hnsres/:name", resolveDomainHandler);
+server.get("/registry-to-skylink/:publickey/:datakey", resolveRegistryEntryToSkylink);
 
 server.listen(port, host, (error) => {
   if (error) throw error;

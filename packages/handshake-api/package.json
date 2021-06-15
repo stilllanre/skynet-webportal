@@ -7,7 +7,8 @@
     "express": "^4.17.1",
     "hs-client": "^0.0.9",
     "node-cache": "^5.1.2",
-    "punycode": "^2.1.1"
+    "punycode": "^2.1.1",
+    "skynet-js": "^4.0.9-beta"
   },
   "devDependencies": {
     "prettier": "^2.2.1"
