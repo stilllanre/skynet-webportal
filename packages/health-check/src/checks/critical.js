@@ -166,6 +166,8 @@ const checks = [
   directServerApiAccessCheck,
 ];
 
+console.log(typeof process.env.ACCOUNTS_ENABLED, process.env.ACCOUNTS_ENABLED);
+
 if (process.env.ACCOUNTS_ENABLED === "true") {
   checks.push(accountHealthCheck, accountWebsiteCheck);
 }
