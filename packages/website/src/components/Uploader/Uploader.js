@@ -12,6 +12,7 @@ import { useTimeoutFn } from "react-use";
 import ms from "ms";
 import useAuthenticatedStatus from "../../services/useAuthenticatedStatus";
 import Link from "../Link";
+import * as tus from "tus-js-client";
 
 const getFilePath = (file) => file.webkitRelativePath || file.path || file.name;
 
@@ -65,7 +66,9 @@ const createUploadErrorMessage = (error) => {
   return `Critical error, please refresh the application and try again. ${error.message}`;
 };
 
-const client = new SkynetClient(process.env.GATSBY_API_URL);
+const client1 = new SkynetClient("https://siasky.xyz");
+const client2 = new SkynetClient("https://siasky.xyz");
+let i = 0;
 
 const RegistrationLink = () => (
   <Link
@@ -192,16 +195,63 @@ const Uploader = () => {
       const upload = async () => {
         try {
           let response;
+          let client = i % 2 ? client1 : client2;
+          i++;
 
           if (file.directory) {
             const directory = file.files.reduce((acc, file) => ({ ...acc, [getRelativeFilePath(file)]: file }), {});
 
             response = await client.uploadDirectory(directory, encodeURIComponent(file.name), { onUploadProgress });
           } else {
-            response = await client.uploadFile(file, { onUploadProgress });
+            // response = await client.uploadFile(file, { onUploadProgress });
+
+            const response = await new Promise((resolve, reject) => {
+              const server = i % 2 ? "siasky.xyz" : "siasky.xyz";
+
+              console.log(server, i % 2, "uploading...");
+
+              // Create a new tus upload
+              const upload = new tus.Upload(file, {
+                endpoint: `http://${server}/skynet/tus`,
+                retryDelays: [0, 3000, 5000, 10000, 20000],
+                chunkSize: (1 << 22) * 10,
+                metadata: {
+                  filename: file.name,
+                  filetype: file.type,
+                },
+                onError: function (error) {
+                  console.log(server, "Failed because: " + error);
+
+                  reject(error);
+                },
+                onProgress: (bytesUploaded, bytesTotal) => {
+                  return onUploadProgress(bytesUploaded / bytesTotal);
+                },
+                onSuccess: function () {
+                  console.log(server, "download %s from %s", upload.file.name, upload.url);
+
+                  resolve(null);
+                },
+              });
+
+              upload.start();
+
+              // Check if there are any previous uploads to continue.
+              // upload.findPreviousUploads().then(function (previousUploads) {
+              //   // Found previous uploads so we select the first one.
+              //   if (previousUploads.length) {
+              //     upload.resumeFromPreviousUpload(previousUploads[0]);
+              //   }
+
+              //   // Start the upload
+              //   upload.start();
+              // });
+            });
           }
 
-          const url = await client.getSkylinkUrl(response.skylink, { subdomain: mode === "directory" });
+          const url = await client.getSkylinkUrl("AQBUUNFGvF261JuvCZjEBQILdfB1UqVmaWuLS8MKPv82Yw", {
+            subdomain: mode === "directory",
+          });
 
           onFileStateChange(file, { status: "complete", url });
         } catch (error) {
