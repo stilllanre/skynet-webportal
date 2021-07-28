@@ -51,11 +51,6 @@ services:
     networks:
       shared:
         ipv4_address: 10.10.10.20
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - nginx
 
   nginx:
     build:
@@ -73,13 +68,16 @@ services:
       - ./docker/data/nginx/logs:/usr/local/openresty/nginx/logs
       - ./docker/data/nginx/skynet:/data/nginx/skynet:ro
       - ./docker/data/sia/apipassword:/data/sia/apipassword:ro
+      - ./docker/data/caddy/data:/data/caddy:ro
     networks:
       shared:
         ipv4_address: 10.10.10.30
-    expose:
-      - 80
+    ports:
+      - "443:443"
+      - "80:80"
     depends_on:
       - sia
+      - caddy
       - handshake-api
       - dnslink-api
       - website
