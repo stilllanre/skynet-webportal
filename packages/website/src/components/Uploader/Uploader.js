@@ -212,7 +212,7 @@ const Uploader = () => {
 
               // Create a new tus upload
               const upload = new tus.Upload(file, {
-                endpoint: `http://${server}/skynet/tus`,
+                endpoint: `//${server}/skynet/tus`,
                 retryDelays: [0, 3000, 5000, 10000, 20000],
                 chunkSize: (1 << 22) * 10,
                 metadata: {
