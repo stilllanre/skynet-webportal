@@ -41,5 +41,9 @@
         }
     }
 
-    reverse_proxy nginx:80
+    reverse_proxy nginx:80 {
+        transport http {
+            versions 1.1
+        }
+    }
 }
