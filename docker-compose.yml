@@ -52,7 +52,6 @@ services:
       shared:
         ipv4_address: 10.10.10.20
     ports:
-      - "80:80"
       - "443:443"
     depends_on:
       - nginx
@@ -76,8 +75,8 @@ services:
     networks:
       shared:
         ipv4_address: 10.10.10.30
-    expose:
-      - 80
+    ports:
+      - "80:80"
     depends_on:
       - sia
       - handshake-api
