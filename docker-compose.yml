@@ -14,26 +14,16 @@ networks:
         - subnet: 10.10.10.0/24
 
 services:
-  sia:
-    build:
-      context: ./docker/sia
-      dockerfile: Dockerfile
-      args:
-        branch: portal-latest
-    container_name: sia
-    restart: unless-stopped
-    logging: *default-logging
-    environment:
-      - SIA_MODULES=gctwr
-    env_file:
-      - .env
-    volumes:
-      - ./docker/data/sia:/sia-data
+  docker-host:
+    image: qoomon/docker-host
+    container_name: docker-host
+    restart: on-failure
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     networks:
       shared:
         ipv4_address: 10.10.10.10
-    expose:
-      - 9980
 
   caddy:
     build:
@@ -79,7 +69,7 @@ services:
     expose:
       - 80
     depends_on:
-      - sia
+      - docker-host
       - handshake-api
       - dnslink-api
       - website
