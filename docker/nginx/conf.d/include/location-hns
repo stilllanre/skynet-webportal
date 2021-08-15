@@ -18,6 +18,10 @@ access_by_lua_block {
         ngx.exit(ngx.HTTP_NOT_FOUND)
     end
 
+    ngx.log(ngx.ERR, hnsres_res.status)
+    ngx.log(ngx.ERR, hnsres_res.body)
+    ngx.log(ngx.ERR, hnsres_res.headers)
+
     -- since /hnsres endpoint response is a json, we need to decode it before we access it
     -- example response: '{"skylink":"sia://XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"}'
     local hnsres_json = json.decode(hnsres_res.body)
