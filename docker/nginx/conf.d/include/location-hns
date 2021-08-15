@@ -7,9 +7,10 @@ set $skylink ''; # placeholder for the raw 46 bit skylink
 # resolve handshake domain by requesting to /hnsres endpoint and assign correct values to $skylink and $rest
 access_by_lua_block {
     local json = require('cjson')
+    local httpc = require("resty.http").new()
 
     -- make a get request to /hnsres endpoint with the domain name from request_uri
-    local hnsres_res = ngx.location.capture("/hnsres/" .. ngx.var.hns_domain_name)
+    local hnsres_res = httpc:request_uri("http://handshake-api:3100/hnsres/" .. ngx.var.hns_domain_name)
 
     -- we want to fail with a generic 404 when /hnsres returns anything but 200 OK with a skylink
     if hnsres_res.status ~= ngx.HTTP_OK then
@@ -18,7 +19,8 @@ access_by_lua_block {
 
     -- since /hnsres endpoint response is a json, we need to decode it before we access it
     -- example response: '{"skylink":"sia://XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"}'
-    local hnsres_json = json.decode(hnsres_res.body)
+    local hnsres_body = hnsres_res:read_body()
+    local hnsres_json = json.decode(hnsres_body)
 
     -- define local variable containing rest of the skylink if provided
     local skylink_rest
@@ -36,7 +38,7 @@ access_by_lua_block {
         local datakey = hnsres_json.registry.datakey
 
         -- make a get request to /skynet/registry endpoint with the credentials from text record
-        local registry_res = ngx.location.capture("/skynet/registry/cached?publickey=" .. publickey .. "&datakey=" .. datakey)
+        local registry_res = httpc:request_uri("http://sia:9980/skynet/registry?publickey=" .. publickey .. "&datakey=" .. datakey)
 
         -- we want to fail with a generic 404 when /skynet/registry returns anything but 200 OK
         if registry_res.status ~= ngx.HTTP_OK then
@@ -44,7 +46,8 @@ access_by_lua_block {
         end
 
         -- since /skynet/registry endpoint response is a json, we need to decode it before we access it
-        local registry_json = json.decode(registry_res.body)
+        local registry_body = registry_res:read_body()
+        local registry_json = json.decode(registry_body)
         -- response will contain a hex encoded skylink, we need to decode it
         local data = (registry_json.data:gsub('..', function (cc)
             return string.char(tonumber(cc, 16))
