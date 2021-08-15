@@ -22,12 +22,8 @@ access_by_lua_block {
     -- example response: '{"skylink":"sia://XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"}'
     local hnsres_json = json.decode(hnsres_res.body)
 
-    ngx.log(ngx.ERR, hnsres_res.body)
-
     -- define local variable containing rest of the skylink if provided
     local skylink_rest
-
-    ngx.log(ngx.ERR, "WTF")
 
     if hnsres_json.skylink then
         -- try to match the skylink with sia:// prefix
@@ -46,7 +42,12 @@ access_by_lua_block {
 
         -- we want to fail with a generic 404 when /skynet/registry returns anything but 200 OK
         if registry_err or registry_res.status ~= ngx.HTTP_OK then
-            ngx.log(ngx.ERR, registry_err)
+            if registry_err then
+                ngx.log(ngx.ERR, registry_err)
+                ngx.log(ngx.ERR, registry_res.status)
+                ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
+            end    
+            if registry_res then ngx.say(registry_res.body) end
             ngx.exit(ngx.HTTP_NOT_FOUND)
         end
 
