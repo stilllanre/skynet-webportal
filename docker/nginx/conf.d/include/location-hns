@@ -18,11 +18,15 @@ access_by_lua_block {
         ngx.exit(ngx.HTTP_NOT_FOUND)
     end
 
+    -- read handshake response
+    local hnsres_body, hnsres_body_err = hnsres_res:read_body()
+    if hnsres_body_err then
+        ngx.log(ngx.ERR, hnsres_body_err)
+        ngx.exit(ngx.HTTP_NOT_FOUND)
+    end
+
     -- since /hnsres endpoint response is a json, we need to decode it before we access it
     -- example response: '{"skylink":"sia://XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"}'
-    local hnsres_body = hnsres_res:read_body()
-    ngx.log(ngx.ERR, "glob")
-    ngx.log(ngx.ERR, hnsres_body)
     local hnsres_json = json.decode(hnsres_body)
 
     -- define local variable containing rest of the skylink if provided
