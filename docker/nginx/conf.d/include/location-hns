@@ -21,6 +21,8 @@ access_by_lua_block {
     -- since /hnsres endpoint response is a json, we need to decode it before we access it
     -- example response: '{"skylink":"sia://XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"}'
     local hnsres_body = hnsres_res:read_body()
+    ngx.log(ngx.ERR, "glob")
+    ngx.log(ngx.ERR, hnsres_body)
     local hnsres_json = json.decode(hnsres_body)
 
     -- define local variable containing rest of the skylink if provided
@@ -49,6 +51,8 @@ access_by_lua_block {
 
         -- since /skynet/registry endpoint response is a json, we need to decode it before we access it
         local registry_body = registry_res:read_body()
+        ngx.log(ngx.ERR, "reg")
+        ngx.log(ngx.ERR, registry_body)
         local registry_json = json.decode(registry_body)
         -- response will contain a hex encoded skylink, we need to decode it
         local data = (registry_json.data:gsub('..', function (cc)
