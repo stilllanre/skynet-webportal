@@ -15,7 +15,7 @@ access_by_lua_block {
     -- we want to fail with a generic 404 when /hnsres returns anything but 200 OK with a skylink
     if hnsres_err or hnsres_res.status ~= ngx.HTTP_OK then
         ngx.log(ngx.ERR, hnsres_err)
-        ngx.exit(ngx.HTTP_NOT_FOUND)
+        return ngx.exit(ngx.HTTP_NOT_FOUND)
     end
 
     -- since /hnsres endpoint response is a json, we need to decode it before we access it
@@ -38,16 +38,18 @@ access_by_lua_block {
         local datakey = hnsres_json.registry.datakey
 
         -- make a get request to /skynet/registry endpoint with the credentials from text record
-        local registry_res, registry_err = httpc:request_uri("http://10.10.10.10:9980/skynet/registry?publickey=" .. publickey .. "&datakey=" .. datakey)
+        local registry_res, registry_err = httpc:request_uri("http://10.10.10.10:9980/skynet/registry?publickey=" .. publickey .. "&datakey=" .. datakey, {
+            headers = { ["User-Agent"] = "Sia-Agent" }
+        })
 
         -- we want to fail with a generic 404 when /skynet/registry returns anything but 200 OK
         if registry_err or registry_res.status ~= ngx.HTTP_OK then
             if registry_err then
                 ngx.log(ngx.ERR, registry_err)
-                ngx.log(ngx.ERR, registry_res.status)
-                ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
-            end    
-            if registry_res then ngx.say(registry_res.body) end
+                return ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
+            else if registry_res then 
+                ngx.say(registry_res.body) 
+            end
             ngx.exit(ngx.HTTP_NOT_FOUND)
         end
 
@@ -63,7 +65,7 @@ access_by_lua_block {
 
     -- fail with a generic 404 if skylink has not been extracted from a valid /hnsres response for some reason
     if not skylink then
-        ngx.exit(ngx.HTTP_NOT_FOUND)
+        return ngx.exit(ngx.HTTP_NOT_FOUND)
     end
 
     ngx.var.skylink = skylink
