@@ -50,6 +50,9 @@ access_by_lua_block {
 }
 
 header_filter_by_lua_block {
+    ngx.header["Skynet-Portal-Api"] = os.getenv("SKYNET_PORTAL_API")
+    ngx.header["Skynet-Server-Api"] = os.getenv("SKYNET_SERVER_API")
+
     -- not empty skynet_proof means this is a skylink v2 request
     -- so we should replace the Skynet-Proof header with the one
     -- we got from /skynet/resolve/ endpoint, otherwise we would
