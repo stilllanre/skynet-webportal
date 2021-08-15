@@ -10,10 +10,11 @@ access_by_lua_block {
     local httpc = require("resty.http").new()
 
     -- make a get request to /hnsres endpoint with the domain name from request_uri
-    local hnsres_res = httpc:request_uri("http://handshake-api:3100/hnsres/" .. ngx.var.hns_domain_name)
+    local hnsres_res, hnsres_err = httpc:request_uri("http://handshake-api:3100/hnsres/" .. ngx.var.hns_domain_name)
 
     -- we want to fail with a generic 404 when /hnsres returns anything but 200 OK with a skylink
-    if hnsres_res.status ~= ngx.HTTP_OK then
+    if hnsres_err or hnsres_res.status ~= ngx.HTTP_OK then
+        ngx.log(ngx.ERR, hnsres_err)
         ngx.exit(ngx.HTTP_NOT_FOUND)
     end
 
