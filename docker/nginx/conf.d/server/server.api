@@ -96,21 +96,6 @@ location /hnsres {
     proxy_pass http://handshake-api:3100;
 }
 
-# internal registry endpoint that caches calls for a certain period of time
-# it is not suitable for every registry call but some requests might be cached
-# and we are using it currently for caching registry resolutions from /hns calls
-location /skynet/registry/cached {
-    include /etc/nginx/conf.d/include/location-skynet-registry;
-    
-    internal; # internal endpoint only
-
-    proxy_cache skynet;
-    proxy_cache_key $args; # cache based on publickey and datakey args
-    proxy_cache_valid 200 30s; # cache only 200 responses and only for 30 seconds
-    proxy_cache_lock on; # queue cache requests for the same resource until it is fully cached
-    proxy_cache_bypass $cookie_nocache $arg_nocache; # add cache bypass option
-}
-
 location /skynet/registry {
     include /etc/nginx/conf.d/include/location-skynet-registry;
 }
@@ -326,19 +311,6 @@ location /__internal/do/not/use/authenticated {
         ngx.say(json.encode{authenticated = false})
         return ngx.exit(ngx.HTTP_OK)
     }
-}
-
-location /accounts {
-    internal; # internal endpoint only
-    access_log off; # do not log traffic
-
-    proxy_cache skynet; # use general nginx cache
-    proxy_cache_key $uri+$skynet_jwt; # include skynet-jwt cookie (mapped to skynet_jwt)
-    proxy_cache_valid 200 401 1m; # cache success and unauthorized responses for 1 minute
-    proxy_buffer_size 8k; # increase size of the buffer to fit jwt in cache key
-
-    rewrite /accounts(.*) $1 break; # drop the /accounts prefix from uri
-    proxy_pass http://10.10.10.70:3000; # hardcoded ip because accounts might not be available
 }
 
 # include custom locations, specific to the server
