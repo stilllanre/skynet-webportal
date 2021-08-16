@@ -78,7 +78,7 @@ header_filter_by_lua_block {
     -- so we should replace the Skynet-Proof header with the one
     -- we got from /skynet/resolve/ endpoint, otherwise we would
     -- be serving cached empty v1 skylink Skynet-Proof header
-    if ngx.var.skynet_proof then
+    if ngx.var.skynet_proof and ngx.var.skynet_proof ~= "" then
         ngx.header["Skynet-Proof"] = ngx.var.skynet_proof
     end
 }
