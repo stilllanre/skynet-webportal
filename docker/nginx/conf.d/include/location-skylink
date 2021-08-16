@@ -26,9 +26,6 @@ set $skynet_proof '';
 # default download rate to unlimited
 set $limit_rate 0;
 
-# set download rate limit to 2621440 if accounts are enabled, unlimited otherwise
-set_by_lua_block $limit_rate { return os.getenv("ACCOUNTS_ENABLED") == "true" and 2621440 or 0 }
-
 access_by_lua_block {
     local httpc = require("resty.http").new()
 
