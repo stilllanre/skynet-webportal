@@ -24,7 +24,7 @@ set $skylink_v2 $skylink;
 set $skynet_proof '';
 
 # default download rate to unlimited
-set $limit_rate 0;
+set $aaaaaaaaaa 0;
 
 access_by_lua_block {
     local httpc = require("resty.http").new()
@@ -85,7 +85,7 @@ header_filter_by_lua_block {
 
 proxy_read_timeout 600;
 proxy_set_header User-Agent: Sia-Agent;
-proxy_limit_rate 0;
+proxy_limit_rate $aaaaaaaaaa;
 
 # in case the requested skylink was v2 and we already resolved it to skylink v1, we're going to pass resolved 
 # skylink v1 to skyd to save that extra skylink v2 lookup in skyd but in turn, in case skyd returns a redirect 
