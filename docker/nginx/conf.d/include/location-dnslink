@@ -4,8 +4,6 @@ include /etc/nginx/conf.d/include/proxy-pass-internal;
 set $dnslink '';
 
 rewrite_by_lua_block {
-    ngx.log(ngx.ERR, "111112321213213123123132312123")
-
     local httpc = require("resty.http").new()
     local res, err = httpc:request_uri("http://10.10.10.55:3100/dnslink/" .. ngx.var.host)
 
