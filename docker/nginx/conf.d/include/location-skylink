@@ -83,9 +83,10 @@ header_filter_by_lua_block {
     end
 }
 
+limit_rate $aaaaaaaaaa;
+
 proxy_read_timeout 600;
 proxy_set_header User-Agent: Sia-Agent;
-proxy_limit_rate $aaaaaaaaaa;
 
 # in case the requested skylink was v2 and we already resolved it to skylink v1, we're going to pass resolved 
 # skylink v1 to skyd to save that extra skylink v2 lookup in skyd but in turn, in case skyd returns a redirect 
