@@ -23,26 +23,46 @@ set $skylink_v2 $skylink;
 # into a response if the request was for skylink v2
 set $skynet_proof '';
 
+# set download rate limit to 2621440 if accounts are enabled, unlimited otherwise
+set_by_lua_block $limit_rate { return os.getenv("ACCOUNTS_ENABLED") == "true" and 2621440 or 0 }
+
 access_by_lua_block {
+    local httpc = require("resty.http").new()
+
     -- detect whether requested skylink is v2
     local isBase32v2 = string.len(ngx.var.skylink) == 55 and string.sub(ngx.var.skylink, 0, 2) == "04"
     local isBase64v2 = string.len(ngx.var.skylink) == 46 and string.sub(ngx.var.skylink, 0, 2) == "AQ"
     
     if isBase32v2 or isBase64v2 then
-        local res = ngx.location.capture("/skynet/resolve/" .. ngx.var.skylink_v2)
-        if res.status == ngx.HTTP_OK then
-            local json = require('cjson')
-            local resolve = json.decode(res.body)
-            ngx.var.skylink_v1 = resolve.skylink
-            ngx.var.skynet_proof = res.header["Skynet-Proof"]
+        local res, err = httpc:request_uri("http://10.10.10.10:9980/skynet/resolve/" .. ngx.var.skylink_v2, {
+            headers = { ["User-Agent"] = "Sia-Agent" }
+        })
+
+        -- print error and exit with 500 or exit with response if status is not 200
+        if err or res and res.status ~= ngx.HTTP_OK then
+            ngx.status = err and ngx.HTTP_INTERNAL_SERVER_ERROR or res.status
+            ngx.header["content-type"] = "text/plain"
+            ngx.say(err or res.body)
+            return ngx.exit(err and ngx.HTTP_INTERNAL_SERVER_ERROR or res.status)
         end
+
+        local json = require('cjson')
+        local resolve = json.decode(res.body)
+        ngx.var.skylink_v1 = resolve.skylink
+        ngx.var.skynet_proof = res.header["Skynet-Proof"]
     end
 
     -- this block runs only when accounts are enabled
     if os.getenv("ACCOUNTS_ENABLED") ~= "true" then return end
 
-    local res = ngx.location.capture("/accounts/user/limits", { copy_all_vars = true })
-    if res.status == ngx.HTTP_OK then
+    local res, err = httpc:request_uri("http://10.10.10.70:3000/user/limits", {
+        headers = { ["User-Agent"] = "Sia-Agent", ["Cookie"] = ngx.header["Cookie"] }
+    })
+    
+    -- fail gracefully in case /user/limits failed
+    if err or res and res.status ~= ngx.HTTP_OK then
+        ngx.log(ngx.ERR, err or res.body)
+    elseif res and res.status == ngx.HTTP_OK then
         local json = require('cjson')
         local limits = json.decode(res.body)
         ngx.var.limit_rate = limits.download
@@ -64,6 +84,7 @@ header_filter_by_lua_block {
 
 proxy_read_timeout 600;
 proxy_set_header User-Agent: Sia-Agent;
+proxy_limit_rate $limit_rate;
 
 # in case the requested skylink was v2 and we already resolved it to skylink v1, we're going to pass resolved 
 # skylink v1 to skyd to save that extra skylink v2 lookup in skyd but in turn, in case skyd returns a redirect 
