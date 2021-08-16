@@ -23,6 +23,9 @@ set $skylink_v2 $skylink;
 # into a response if the request was for skylink v2
 set $skynet_proof '';
 
+# default download rate to unlimited
+set $limit_rate 0;
+
 # set download rate limit to 2621440 if accounts are enabled, unlimited otherwise
 set_by_lua_block $limit_rate { return os.getenv("ACCOUNTS_ENABLED") == "true" and 2621440 or 0 }
 
@@ -62,6 +65,7 @@ access_by_lua_block {
     -- fail gracefully in case /user/limits failed
     if err or res and res.status ~= ngx.HTTP_OK then
         ngx.log(ngx.ERR, err or res.body)
+        ngx.var.limit_rate = 2621440
     elseif res and res.status == ngx.HTTP_OK then
         local json = require('cjson')
         local limits = json.decode(res.body)
