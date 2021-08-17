@@ -1,4 +1,4 @@
-FROM openresty/openresty:1.19.3.1-8-bionic
+FROM openresty/openresty:1.19.3.2-3-bionic
 
 # RUN apt-get update -qq && apt-get install cron logrotate -qq
 RUN luarocks install lua-resty-http
