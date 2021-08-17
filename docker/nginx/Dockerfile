@@ -8,7 +8,7 @@ COPY conf.d /etc/nginx/conf.d
 COPY conf.d.templates /etc/nginx/conf.d.templates
 
 # CMD ["sh", "-c", "service cron start;", "/usr/local/openresty/bin/openresty -g daemon off;"]
-CMD [ "sh", "-c", \
+CMD [ "bash", "-c", \
       "CERT_NAME=\${NGINX_PORTAL_API_NAME/\*/wildcard_} ./mo < ./etc/nginx/conf.d.templates/server.api.conf  ; \
        CERT_NAME=\${NGINX_PORTAL_HNS_NAME/\*/wildcard_} ./mo < /etc/nginx/conf.d.templates/server.hns.conf  ; \
        CERT_NAME=\${NGINX_PORTAL_SKYLINK_NAME/\*/wildcard_} ./mo < /etc/nginx/conf.d.templates/server.skylink.conf  ; \
