@@ -9,6 +9,6 @@ COPY conf.d.templates /etc/nginx/conf.d.templates
 
 # CMD ["sh", "-c", "service cron start;", "/usr/local/openresty/bin/openresty -g daemon off;"]
 CMD [ "sh", "-c", \
-      "CERT_NAME=\${NGINX_PORTAL_API_NAME/\*/wildcard_} cat ./etc/nginx/conf.d.templates/server.api.conf | ./mo ; \
+      "CERT_NAME=\${NGINX_PORTAL_API_NAME/\*/wildcard_} cat /etc/nginx/conf.d.templates/server.api.conf | ./mo ; \
        /usr/local/openresty/bin/openresty -g daemon off;" \
     ]
