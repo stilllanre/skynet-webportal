@@ -276,6 +276,3 @@ location /__internal/do/not/use/authenticated {
         return ngx.exit(ngx.HTTP_OK)
     }
 }
-
-# include custom locations, specific to the server
-include /etc/nginx/conf.d/server-override/*;
