@@ -3,7 +3,7 @@ ssl_session_cache shared:MozSSL:10m; # about 40000 sessions
 ssl_session_tickets off;
 
 # https://ssl-config.mozilla.org/ffdhe2048.txt
-ssl_dhparam /etc/nginx/conf.d/ffdhe2048.txt;
+ssl_dhparam /etc/nginx/conf.d/dhparam.pem;
 
 # intermediate configuration
 ssl_protocols TLSv1.2 TLSv1.3;
