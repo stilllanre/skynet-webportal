@@ -5,8 +5,6 @@ recursive_error_pages on;
 # redirect to dnslookup endpoint
 error_page 460 = @dnslink;
 if ($server_name != $ssl_server_name) {
-    ssl_certificate     /etc/resty-auto-ssl/resty-auto-ssl-fallback.crt;
-    ssl_certificate_key	/etc/resty-auto-ssl/resty-auto-ssl-fallback.key;
     return 460;
 }
 
