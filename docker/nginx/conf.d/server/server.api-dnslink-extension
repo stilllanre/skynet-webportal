@@ -1,0 +1,30 @@
+# This is only safe workaround to reroute based on some conditions
+# See https://www.nginx.com/resources/wiki/start/topics/depth/ifisevil/
+recursive_error_pages on;
+
+# redirect to dnslookup endpoint
+error_page 460 = @dnslink;
+if ($server_name ~= $ssl_server_name) {
+    return 460;
+}
+
+location @dnslink {
+    set $skylink "";
+    set $path $uri;
+
+    rewrite_by_lua_block {
+        local httpc = require("resty.http").new()
+        local res, err = httpc:request_uri("http://10.10.10.55:3100/dnslink/" .. ngx.var.host)
+
+        if err or res and res.status ~= ngx.HTTP_OK then
+            ngx.status = err and ngx.HTTP_INTERNAL_SERVER_ERROR or res.status
+            ngx.header["content-type"] = "text/plain"
+            ngx.say(err or res.body)
+            ngx.exit(err and ngx.HTTP_INTERNAL_SERVER_ERROR or res.status)
+        else
+            ngx.var.skylink = res.body
+        end
+    }
+
+    include /etc/nginx/conf.d/include/location-skylink;
+}
