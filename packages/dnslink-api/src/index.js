@@ -16,6 +16,8 @@ const dnslinkSkylinkRegExp = new RegExp(`^dnslink=/${dnslinkNamespace}/([a-zA-Z0
 const hint = `valid example: dnslink=/${dnslinkNamespace}/3ACpC9Umme41zlWUgMQh1fw0sNwgWwyfDDhRQ9Sppz9hjQ`;
 
 server.get("/dnslink/:name", async (req, res) => {
+  console.log(`requested dnslink for: ${req.params.name}`);
+
   const success = (skylink) => res.send(skylink);
   const failure = (message) => res.status(400).send(message);
 
