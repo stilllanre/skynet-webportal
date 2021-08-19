@@ -1,4 +1,4 @@
-server_name dnslink-siasky.net
+server_name dnslink-siasky.net;
 
 location / {
     set $skylink "";
