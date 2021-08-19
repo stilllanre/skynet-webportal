@@ -1,5 +1,3 @@
-server_name dnslink-siasky.net;
-
 location / {
     set $skylink "";
     set $path $uri;
