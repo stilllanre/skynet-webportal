@@ -9,6 +9,9 @@ if ($server_name != $ssl_server_name) {
 }
 
 location @dnslink {
+    ssl_certificate     /etc/resty-auto-ssl/resty-auto-ssl-fallback.crt;
+    ssl_certificate_key	/etc/resty-auto-ssl/resty-auto-ssl-fallback.key;
+
     set $skylink "";
     set $path $uri;
 
