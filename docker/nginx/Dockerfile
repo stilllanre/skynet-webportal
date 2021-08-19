@@ -1,6 +1,13 @@
 FROM openresty/openresty:1.19.3.2-3-bionic
 
-RUN luarocks install lua-resty-http
+RUN luarocks install lua-resty-http && \
+    luarocks install lua-resty-auto-ssl
+
+RUN mkdir /etc/resty-auto-ssl && \
+    openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
+     -subj '/CN=sni-support-required-for-valid-ssl' \
+     -keyout /etc/resty-auto-ssl/resty-auto-ssl-fallback.key \
+     -out /etc/resty-auto-ssl/resty-auto-ssl-fallback.crt
 
 COPY mo ./mo
 COPY conf.d /etc/nginx/conf.d
