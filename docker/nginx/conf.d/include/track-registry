@@ -4,15 +4,14 @@ log_by_lua_block {
     if os.getenv("ACCOUNTS_ENABLED") ~= "true" then return end
 
     if ngx.status == ngx.HTTP_OK or ngx.status == ngx.HTTP_NOT_FOUND then
-        local http = require("socket.http")
+        local httpc = require("resty.http").new()
         local method = ngx.req.get_method() == ngx.HTTP_GET and "read" or "write"
-        local ok, statusCode, headers, statusText = http.request {
-            url = "http://accounts:3000/track/registry/" .. method,
+        local res, err = httpc:request_uri("http://10.10.10.70:3000/track/registry/" .. method, {
             method = "POST",
-            headers = ngx.req.get_headers()
-        }
-        if statusCode ~= ngx.HTTP_NO_CONTENT and statusCode ~= ngx.HTTP_UNAUTHORIZED then
-            ngx.log(ngx.ERR, "accounts endpoint /track/registry/" .. method .. " failed with error " .. statusCode)
+            headers = { ["Cookie"] = ngx.header["Cookie"] },
+        })
+        if err or res and res.status ~= ngx.HTTP_NO_CONTENT then
+            ngx.log(ngx.ERR, "accounts endpoint /track/registry/" .. method .. " failed with error " .. err or res.body)
         end
     end
 }
