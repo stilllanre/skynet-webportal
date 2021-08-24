@@ -14,7 +14,7 @@ log_by_lua_block {
             headers = { ["Cookie"] = ngx.header["Cookie"] },
         })
         
-        if err or res and res.status ~= ngx.HTTP_NO_CONTENT then
+        if err or (res and res.status ~= ngx.HTTP_NO_CONTENT) then
             ngx.log(ngx.ERR, "accounts endpoint /track/download/" .. skylink .. " failed with error " .. err or res.body)
         end
     end

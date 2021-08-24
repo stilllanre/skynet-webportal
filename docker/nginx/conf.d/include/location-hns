@@ -14,11 +14,11 @@ access_by_lua_block {
     local hnsres_res, hnsres_err = httpc:request_uri("http://10.10.10.50:3100/hnsres/" .. ngx.var.hns_domain)
 
     -- print error and exit with 500 or exit with response if status is not 200
-    if hnsres_err or hnsres_res and hnsres_res.status ~= ngx.HTTP_OK then
-        ngx.status = hnsres_err and ngx.HTTP_INTERNAL_SERVER_ERROR or hnsres_res.status
+    if hnsres_err or (hnsres_res and hnsres_res.status ~= ngx.HTTP_OK) then
+        ngx.status = (hnsres_err and ngx.HTTP_INTERNAL_SERVER_ERROR) or hnsres_res.status
         ngx.header["content-type"] = "text/plain"
         ngx.say(hnsres_err or hnsres_res.body)
-        return ngx.exit(hnsres_err and ngx.HTTP_INTERNAL_SERVER_ERROR or hnsres_res.status)
+        return ngx.exit(ngx.status)
     end
 
     -- since /hnsres endpoint response is a json, we need to decode it before we access it
@@ -47,11 +47,11 @@ access_by_lua_block {
         })
 
         -- print error and exit with 500 or exit with response if status is not 200
-        if registry_err or registry_res and registry_res.status ~= ngx.HTTP_OK then
-            ngx.status = registry_err and ngx.HTTP_INTERNAL_SERVER_ERROR or registry_res.status
+        if registry_err or (registry_res and registry_res.status ~= ngx.HTTP_OK) then
+            ngx.status = (registry_err and ngx.HTTP_INTERNAL_SERVER_ERROR) or registry_res.status
             ngx.header["content-type"] = "text/plain"
             ngx.say(registry_err or registry_res.body)
-            return ngx.exit(registry_err and ngx.HTTP_INTERNAL_SERVER_ERROR or registry_res.status)
+            return ngx.exit(ngx.status)
         end
 
         -- since /skynet/registry endpoint response is a json, we need to decode it before we access it
