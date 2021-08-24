@@ -7,7 +7,7 @@ FROM caddy:2.4.3
 
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
 
-# bash required for mo executable to work
+# bash required for mo to work (mo is mustache templating engine - https://github.com/tests-always-included/mo)
 RUN apk add --no-cache bash
 
 COPY caddy.json.template mo /etc/caddy/
