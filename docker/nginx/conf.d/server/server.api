@@ -260,6 +260,8 @@ location /__internal/do/not/use/authenticated {
         end
 
         local httpc = require("resty.http").new()
+
+        -- 10.10.10.70 points to accounts service (alias not available when using resty-http)
         local res, err = httpc:request_uri("http://10.10.10.70:3000/user", {
             headers = { ["User-Agent"] = "Sia-Agent", ["Cookie"] = ngx.header["Cookie"] }
         })

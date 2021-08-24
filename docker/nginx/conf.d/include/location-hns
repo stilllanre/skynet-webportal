@@ -10,6 +10,7 @@ access_by_lua_block {
     local httpc = require("resty.http").new()
 
     -- make a get request to /hnsres endpoint with the domain name from request_uri
+    -- 10.10.10.50 points to handshake-api service (alias not available when using resty-http)
     local hnsres_res, hnsres_err = httpc:request_uri("http://10.10.10.50:3100/hnsres/" .. ngx.var.hns_domain)
 
     -- print error and exit with 500 or exit with response if status is not 200
@@ -40,6 +41,7 @@ access_by_lua_block {
         local datakey = hnsres_json.registry.datakey
 
         -- make a get request to /skynet/registry endpoint with the credentials from text record
+        -- 10.10.10.10 points to sia service (alias not available when using resty-http)
         local registry_res, registry_err = httpc:request_uri("http://10.10.10.10:9980/skynet/registry?publickey=" .. publickey .. "&datakey=" .. datakey, {
             headers = { ["User-Agent"] = "Sia-Agent" }
         })
