@@ -1,7 +1,6 @@
 FROM openresty/openresty:1.19.3.2-3-bionic
 
 RUN luarocks install lua-resty-http && \
-    ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log && \
     openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
     -subj '/CN=local-certificate' \
     -keyout /etc/ssl/local-certificate.key \
@@ -16,5 +15,6 @@ CMD [ "bash", "-c", \
        ./mo < /etc/nginx/conf.d.templates/server.api.conf > /etc/nginx/conf.d/server.api.conf; \
        ./mo < /etc/nginx/conf.d.templates/server.hns.conf > /etc/nginx/conf.d/server.hns.conf; \
        ./mo < /etc/nginx/conf.d.templates/server.skylink.conf > /etc/nginx/conf.d/server.skylink.conf ; \
-       /usr/local/openresty/bin/openresty '-g daemon off;'" \
+       /usr/local/openresty/bin/openresty '-g daemon off;' ; \
+       ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log" \
     ]
