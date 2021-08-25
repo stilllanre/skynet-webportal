@@ -16,7 +16,7 @@ log_by_lua_block {
         })
         
         if err or (res and res.status ~= ngx.HTTP_NO_CONTENT) then
-            ngx.log(ngx.ERR, "accounts endpoint /track/download/" .. skylink .. " failed with error " .. err or res.body)
+            ngx.log(ngx.ERR, "Failed accounts service request /track/download/" .. skylink .. ": ", err or res.body)
         end
     end
 
