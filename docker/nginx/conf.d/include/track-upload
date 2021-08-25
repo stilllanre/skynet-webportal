@@ -3,7 +3,7 @@ log_by_lua_block {
     -- this block runs only when accounts are enabled
     if os.getenv("ACCOUNTS_ENABLED") ~= "true" then return end
 
-    local function track(premature, skylink, cookie)
+    local function track(premature, skylink, jwt)
         if premature then return end
 
         local httpc = require("resty.http").new()
@@ -11,7 +11,7 @@ log_by_lua_block {
         -- 10.10.10.70 points to accounts service (alias not available when using resty-http)
         local res, err = httpc:request_uri("http://10.10.10.70:3000/track/upload/" .. skylink, {
             method = "POST",
-            headers = { ["Cookie"] = cookie },
+            headers = { ["Cookie"] = "skynet-jwt=" .. jwt },
         })
         
         if err or (res and res.status ~= ngx.HTTP_NO_CONTENT) then
@@ -21,9 +21,9 @@ log_by_lua_block {
 
     if ngx.header["Skynet-Skylink"] then
         ngx.log(ngx.ERR, "--------------------------------")
-        ngx.log(ngx.ERR, ngx.req.get_headers()["Cookie"])
+        ngx.log(ngx.ERR, ngx.var.skynet_jwt)
         ngx.log(ngx.ERR, "--------------------------------")
-        local ok, err = ngx.timer.at(0, track, ngx.header["Skynet-Skylink"], ngx.header["Cookie"])
+        local ok, err = ngx.timer.at(0, track, ngx.header["Skynet-Skylink"], ngx.var.skynet_jwt)
         if err then ngx.log(ngx.ERR, "Failed to create timer: ", err) end
     end
 }
