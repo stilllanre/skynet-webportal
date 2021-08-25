@@ -3,10 +3,11 @@ log_by_lua_block {
     -- this block runs only when accounts are enabled
     if os.getenv("ACCOUNTS_ENABLED") ~= "true" then return end
 
-    local function track(premature, method, cookie)
+    local function track(premature, request_method, cookie)
         if premature then return end
 
         local httpc = require("resty.http").new()
+        local method = request_method == ngx.HTTP_GET and "read" or "write"
 
         -- 10.10.10.70 points to accounts service (alias not available when using resty-http)
         local res, err = httpc:request_uri("http://10.10.10.70:3000/track/registry/" .. method, {
