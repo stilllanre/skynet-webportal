@@ -27,7 +27,7 @@ set $skynet_proof '';
 set $limit_rate 0;
 
 access_by_lua_block {
-    local httpc = require("resty.http").new()
+    local httpc = require("lua.resty.http").new()
 
     -- detect whether requested skylink is v2
     local isBase32v2 = string.len(ngx.var.skylink) == 55 and string.sub(ngx.var.skylink, 0, 2) == "04"

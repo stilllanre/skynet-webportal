@@ -6,7 +6,7 @@ log_by_lua_block {
     local function track(premature, skylink, status, body_bytes_sent, cookie)
         if premature then return end
 
-        local httpc = require("resty.http").new()
+        local httpc = require("lua.resty.http").new()
         local query = table.concat({ "status=" .. status, "bytes=" .. body_bytes_sent }, "&")
 
         -- 10.10.10.70 points to accounts service (alias not available when using resty-http)
