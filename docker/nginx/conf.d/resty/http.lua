@@ -17,7 +17,6 @@ local ngx_re_find = ngx.re.find
 local ngx_log = ngx.log
 local ngx_DEBUG = ngx.DEBUG
 local ngx_ERR = ngx.ERR
-local ngx_var = ngx.var
 local ngx_print = ngx.print
 local co_yield = coroutine.yield
 local co_create = coroutine.create
@@ -266,19 +265,7 @@ function _M.parse_uri(_, uri, query_in_path)
         -- If the URI is schemaless (i.e. //example.com) try to use our current
         -- request scheme.
         if not m[1] then
-            -- Schema-less URIs can occur in client side code, implying "inherit
-            -- the schema from the current request". We support it for a fairly
-            -- specific case; if for example you are using the ESI parser in
-            -- ledge (https://github.com/ledgetech/ledge) to perform in-flight
-            -- sub requests on the edge based on instructions found in markup,
-            -- those URIs may also be schemaless with the intention that the
-            -- subrequest would inherit the schema just like JavaScript would.
-            local scheme = ngx_var.scheme
-            if scheme == "http" or scheme == "https" then
-                m[1] = scheme
-            else
-                return nil, "schemaless URIs require a request context: " .. uri
-            end
+            return nil, "schemaless URIs require a request context: " .. uri
         end
 
         if m[3] then
