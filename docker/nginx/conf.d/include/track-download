@@ -3,7 +3,9 @@ log_by_lua_block {
     -- this block runs only when accounts are enabled
     if os.getenv("ACCOUNTS_ENABLED") ~= "true" then return end
 
-    local function track(skylink, status, body_bytes_sent, cookie)
+    local function track(premature, skylink, status, body_bytes_sent, cookie)
+        if premature then return end
+        
         local httpc = require("resty.http").new()
         local query = table.concat({ "status=" .. status, "bytes=" .. body_bytes_sent }, "&")
 
