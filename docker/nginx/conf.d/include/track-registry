@@ -14,7 +14,7 @@ log_by_lua_block {
         })
         
         if err or (res and res.status ~= ngx.HTTP_NO_CONTENT) then
-            ngx.log(ngx.ERR, "Failed accounts service request /track/registry/" .. method .. ": ", err or res.body)
+            ngx.log(ngx.ERR, "Failed accounts service request /track/registry/" .. method .. ": ", err or ("[HTTP " .. res.status .. "] " .. res.body))
         end
     end
 }
