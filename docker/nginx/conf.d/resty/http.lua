@@ -163,36 +163,9 @@ do
     -- ok, err = httpc:connect(host, port, options_table?)
     -- ok, err = httpc:connect("unix:/path/to/unix.sock", options_table?)
     function _M.connect(self, options, ...)
-        if type(options) == "table" then
-            -- all-in-one interface
-            return aio_connect(self, options)
-        else
-            -- backward compatible
-            return self:tcp_only_connect(options, ...)
-        end
+        -- all-in-one interface
+        return aio_connect(self, options)
     end
-end
-
-function _M.tcp_only_connect(self, ...)
-    ngx_log(ngx_DEBUG, "Use of deprecated `connect` method signature")
-
-    local sock = self.sock
-    if not sock then
-        return nil, "not initialized"
-    end
-
-    self.host = select(1, ...)
-    self.port = select(2, ...)
-
-    -- If port is not a number, this is likely a unix domain socket connection.
-    if type(self.port) ~= "number" then
-        self.port = nil
-    end
-
-    self.keepalive = true
-    self.ssl = false
-
-    return sock:connect(...)
 end
 
 
@@ -998,76 +971,6 @@ function _M.get_proxy_uri(self, scheme, host)
     end
 
     return nil
-end
-
-
--- ----------------------------------------------------------------------------
--- The following functions are considered DEPRECATED and may be REMOVED in
--- future releases. Please see the notes in `README.md`.
--- ----------------------------------------------------------------------------
-
-function _M.ssl_handshake(self, ...)
-    ngx_log(ngx_DEBUG, "Use of deprecated function `ssl_handshake`")
-
-    local sock = self.sock
-    if not sock then
-        return nil, "not initialized"
-    end
-
-    self.ssl = true
-
-    return sock:sslhandshake(...)
-end
-
-
-function _M.connect_proxy(self, proxy_uri, scheme, host, port, proxy_authorization)
-    ngx_log(ngx_DEBUG, "Use of deprecated function `connect_proxy`")
-
-    -- Parse the provided proxy URI
-    local parsed_proxy_uri, err = self:parse_uri(proxy_uri, false)
-    if not parsed_proxy_uri then
-        return nil, err
-    end
-
-    -- Check that the scheme is http (https is not supported for
-    -- connections between the client and the proxy)
-    local proxy_scheme = parsed_proxy_uri[1]
-    if proxy_scheme ~= "http" then
-        return nil, "protocol " .. proxy_scheme .. " not supported for proxy connections"
-    end
-
-    -- Make the connection to the given proxy
-    local proxy_host, proxy_port = parsed_proxy_uri[2], parsed_proxy_uri[3]
-    local c, err = self:tcp_only_connect(proxy_host, proxy_port)
-    if not c then
-        return nil, err
-    end
-
-    if scheme == "https" then
-        -- Make a CONNECT request to create a tunnel to the destination through
-        -- the proxy. The request-target and the Host header must be in the
-        -- authority-form of RFC 7230 Section 5.3.3. See also RFC 7231 Section
-        -- 4.3.6 for more details about the CONNECT request
-        local destination = host .. ":" .. port
-        local res, err = self:request({
-            method = "CONNECT",
-            path = destination,
-            headers = {
-                ["Host"] = destination,
-                ["Proxy-Authorization"] = proxy_authorization,
-            }
-        })
-
-        if not res then
-            return nil, err
-        end
-
-        if res.status < 200 or res.status > 299 then
-            return nil, "failed to establish a tunnel through a proxy: " .. res.status
-        end
-    end
-
-    return c, nil
 end
 
 
