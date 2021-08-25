@@ -1,7 +1,6 @@
 FROM openresty/openresty:1.19.3.2-3-bionic
 
-RUN luarocks install lua-resty-http && \
-    openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
+RUN openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
     -subj '/CN=local-certificate' \
     -keyout /etc/ssl/local-certificate.key \
     -out /etc/ssl/local-certificate.crt
