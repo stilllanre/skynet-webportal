@@ -20,6 +20,9 @@ log_by_lua_block {
     end
 
     if ngx.header["Skynet-Skylink"] then
+        ngx.log(ngx.ERR, "--------------------------------")
+        ngx.log(ngx.ERR, ngx.header["Cookie"])
+        ngx.log(ngx.ERR, "--------------------------------")
         local ok, err = ngx.timer.at(0, track, ngx.header["Skynet-Skylink"], ngx.header["Cookie"])
         if err then ngx.log(ngx.ERR, "Failed to create timer: ", err) end
     end
