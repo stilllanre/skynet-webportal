@@ -7,7 +7,7 @@ set $skylink ''; # placeholder for the raw 46 bit skylink
 # resolve handshake domain by requesting to /hnsres endpoint and assign correct values to $skylink and $rest
 access_by_lua_block {
     local json = require('cjson')
-    local httpc = require("resty_http").new()
+    local httpc = require("resty.http").new()
 
     -- make a get request to /hnsres endpoint with the domain name from request_uri
     -- 10.10.10.50 points to handshake-api service (alias not available when using resty-http)
