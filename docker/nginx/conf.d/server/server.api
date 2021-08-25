@@ -69,7 +69,7 @@ location /skynet/health {
     proxy_cache_valid any 1m; # cache responses for 1 minute
     proxy_set_header User-Agent: Sia-Agent;
     proxy_read_timeout 5m; # extend the read timeout
-    proxy_pass http://siad;
+    proxy_pass http://sia:9980;
 }
 
 location /health-check {
