@@ -5,7 +5,7 @@ location / {
     set $path $uri;
 
     rewrite_by_lua_block {
-        local httpc = require("lua.resty.http").new()
+        local httpc = require("resty_http").new()
 
         -- 10.10.10.55 points to dnslink-api service (alias not available when using resty-http)
         local res, err = httpc:request_uri("http://10.10.10.55:3100/dnslink/" .. ngx.var.host)

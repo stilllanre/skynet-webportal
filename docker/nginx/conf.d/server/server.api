@@ -270,7 +270,7 @@ location /__internal/do/not/use/authenticated {
             return ngx.exit(ngx.HTTP_OK)
         end
 
-        local httpc = require("lua.resty.http").new()
+        local httpc = require("resty_http").new()
 
         -- 10.10.10.70 points to accounts service (alias not available when using resty-http)
         local res, err = httpc:request_uri("http://10.10.10.70:3000/user", {
