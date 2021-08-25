@@ -19,7 +19,6 @@ local ngx_DEBUG = ngx.DEBUG
 local ngx_ERR = ngx.ERR
 local ngx_var = ngx.var
 local ngx_print = ngx.print
-local ngx_header = ngx.header
 local co_yield = coroutine.yield
 local co_create = coroutine.create
 local co_status = coroutine.status
@@ -1082,47 +1081,6 @@ function _M.connect_proxy(self, proxy_uri, scheme, host, port, proxy_authorizati
     end
 
     return c, nil
-end
-
-
-function _M.proxy_response(_, response, chunksize)
-    ngx_log(ngx_DEBUG, "Use of deprecated function `proxy_response`")
-
-    if not response then
-        ngx_log(ngx_ERR, "no response provided")
-        return
-    end
-
-    ngx.status = response.status
-
-    -- Filter out hop-by-hop headeres
-    for k, v in pairs(response.headers) do
-        if not HOP_BY_HOP_HEADERS[str_lower(k)] then
-            ngx_header[k] = v
-        end
-    end
-
-    local reader = response.body_reader
-
-    repeat
-        local chunk, ok, read_err, print_err
-
-        chunk, read_err = reader(chunksize)
-        if read_err then
-            ngx_log(ngx_ERR, read_err)
-        end
-
-        if chunk then
-            ok, print_err = ngx_print(chunk)
-            if not ok then
-                ngx_log(ngx_ERR, print_err)
-            end
-        end
-
-        if read_err or print_err then
-            break
-        end
-    until not chunk
 end
 
 
