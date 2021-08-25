@@ -63,7 +63,7 @@ access_by_lua_block {
     
     -- fail gracefully in case /user/limits failed
     if err or (res and res.status ~= ngx.HTTP_OK) then
-        ngx.log(ngx.ERR, err or res.body)
+        ngx.log(ngx.ERR, "Failed accounts service request /user/limits: ", err or res.body)
         ngx.var.limit_rate = 2621440
     elseif res and res.status == ngx.HTTP_OK then
         local json = require('cjson')
