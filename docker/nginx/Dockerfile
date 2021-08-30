@@ -6,7 +6,7 @@ RUN luarocks install lua-resty-http && \
     -keyout /etc/ssl/local-certificate.key \
     -out /etc/ssl/local-certificate.crt
 
-COPY mo ./
+COPY mo skynetsw.html ./
 COPY conf.d /etc/nginx/conf.d
 COPY conf.d.templates /etc/nginx/conf.d.templates
 
