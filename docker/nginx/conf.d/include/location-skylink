@@ -3,7 +3,7 @@ include /etc/nginx/conf.d/include/proxy-buffer;
 include /etc/nginx/conf.d/include/proxy-cache-downloads;
 include /etc/nginx/conf.d/include/track-download;
 
-if ($http_skynetsw = "") {
+if ($cookie_skynetsw = "") {
     set $nocache 1;
     proxy_pass http://skynetsw:3000;
 }
