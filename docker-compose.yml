@@ -79,6 +79,7 @@ services:
       - handshake-api
       - dnslink-api
       - website
+      - skynetsw
 
   website:
     build:
@@ -94,6 +95,19 @@ services:
         ipv4_address: 10.10.10.35
     expose:
       - 9000
+
+  skynetsw:
+    build:
+      context: ./packages/skynetsw
+      dockerfile: Dockerfile
+    container_name: skynetsw
+    restart: unless-stopped
+    logging: *default-logging
+    networks:
+      shared:
+        ipv4_address: 10.10.10.37
+    expose:
+      - 3000
 
   handshake:
     build:
