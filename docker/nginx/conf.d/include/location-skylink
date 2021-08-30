@@ -5,6 +5,7 @@ include /etc/nginx/conf.d/include/track-download;
 
 if ($cookie_skynetsw = "") {
     set $nocache 1;
+    default_type "text/html";
     proxy_pass http://skynetsw:3000;
     return 200;
 }
