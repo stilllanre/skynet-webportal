@@ -4,7 +4,7 @@ include /etc/nginx/conf.d/include/proxy-cache-downloads;
 include /etc/nginx/conf.d/include/track-download;
 
 if ($http_skynetsw = "") {
-    proxy_pass http://website:9000/skynetsw
+    proxy_pass http://website:9000/skynetsw;
 }
 
 # redirect purge calls to separate location
