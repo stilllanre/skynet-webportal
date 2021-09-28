@@ -5,7 +5,7 @@ import SelfServiceMessages from "./SelfServiceMessages";
 
 export default function SelfServiceForm({ flow, fieldsConfig, title, button = "Submit" }) {
   const fields = flow.ui.nodes
-    .filter((field) => !field.attributes.name.startsWith("traits.name") && field.attributes.type !== "submit") // drop name fields
+    .filter((field) => !field.attributes.name.startsWith("traits.name")) // drop name fields
     .map((field) => merge({}, field, fieldsConfig[field.attributes.name]))
     .sort((a, b) => (a.attributes.position < b.attributes.position ? -1 : 1));
   const formik = useFormik({
