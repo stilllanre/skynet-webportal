@@ -26,16 +26,12 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const { status, data, ...props } = await kratos.getSelfServiceLoginFlow(flow, context.req.headers.cookie);
+    const { status, data } = await kratos.getSelfServiceLoginFlow(flow, context.req.headers.cookie);
 
     if (status === 200) return { props: { flow: data } };
 
-    console.log(status, data, props);
-
     throw new Error(`Failed to retrieve flow ${flow} with code ${status}`);
   } catch (error) {
-    console.log(">>>", error);
-
     return {
       redirect: {
         permanent: false,
@@ -62,6 +58,8 @@ const fieldsConfig = {
 };
 
 export default function Login({ flow }) {
+  console.log(flow);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
