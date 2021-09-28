@@ -96,7 +96,7 @@ export default function SelfServiceForm({ flow, fieldsConfig, title, button = "S
             {button}
           </button>
 
-          {flow && <SelfServiceMessages messages={flow.messages} />}
+          <SelfServiceMessages messages={flow.ui.messages} />
         </form>
       </div>
     </div>
