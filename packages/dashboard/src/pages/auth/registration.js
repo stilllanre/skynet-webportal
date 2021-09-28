@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const { status, data } = await kratos.getSelfServiceRegistrationFlow(flow, context.req.getHeader("Cookie"));
+    const { status, data } = await kratos.getSelfServiceRegistrationFlow(flow, context.req.header.cookie);
 
     if (status === 200) return { props: { flow: data } };
 

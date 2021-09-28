@@ -15,7 +15,7 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const { status, data } = await kratos.getSelfServiceError(error, context.req.getHeader("Cookie"));
+    const { status, data } = await kratos.getSelfServiceError(error, context.req.header.cookie);
 
     if ("errors" in data) return { props: { errors: data.errors } };
 
