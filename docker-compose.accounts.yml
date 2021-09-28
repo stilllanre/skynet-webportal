@@ -66,7 +66,7 @@ services:
       - "27017:27017"
 
   kratos-migrate:
-    image: oryd/kratos:v0.5.5-alpha.1
+    image: oryd/kratos:v0.7.6-alpha.1
     container_name: kratos-migrate
     restart: "no"
     logging: *default-logging
@@ -85,7 +85,7 @@ services:
       - cockroach
 
   kratos:
-    image: oryd/kratos:v0.5.5-alpha.1
+    image: oryd/kratos:v0.7.6-alpha.1
     container_name: kratos
     restart: unless-stopped
     logging: *default-logging
@@ -151,7 +151,7 @@ services:
       - kratos
 
   cockroach:
-    image: cockroachdb/cockroach:v20.2.3
+    image: cockroachdb/cockroach:v21.1.9
     container_name: cockroach
     restart: unless-stopped
     logging: *default-logging
