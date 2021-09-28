@@ -26,7 +26,7 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const { status, data, ...props } = await kratos.getSelfServiceLoginFlow(flow, context.req.header.cookie);
+    const { status, data, ...props } = await kratos.getSelfServiceLoginFlow(flow, context.req.headers.cookie);
 
     if (status === 200) return { props: { flow: data } };
 
