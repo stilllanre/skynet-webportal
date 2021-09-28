@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Configuration, PublicApi } from "@ory/kratos-client";
+import { Configuration, V0alpha2Api } from "@ory/kratos-client";
 import config from "../config";
 
-const kratos = new PublicApi(new Configuration({ basePath: config.kratos.public }));
+const kratos = new V0alpha2Api(new Configuration({ basePath: config.kratos.public }));
 
 export async function getServerSideProps(context) {
   const error = context.query.error;
@@ -15,7 +15,7 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const { status, data } = await kratos.getSelfServiceError(error);
+    const { status, data } = await kratos.getSelfServiceError(error, context.req.getHeader("Cookie"));
 
     if ("errors" in data) return { props: { errors: data.errors } };
 

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@fontsource/metropolis": "4.5.0",
-    "@ory/kratos-client": "0.7.6-alpha.7",
+    "@ory/kratos-client": "0.0.0-next.a5e0cb21f7a4",
     "@stripe/react-stripe-js": "1.4.1",
     "@stripe/stripe-js": "1.18.0",
     "@tailwindcss/forms": "0.3.3",

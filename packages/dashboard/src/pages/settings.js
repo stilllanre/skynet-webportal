@@ -1,10 +1,10 @@
-import { Configuration, PublicApi } from "@ory/kratos-client";
+import { Configuration, V0alpha2Api } from "@ory/kratos-client";
 import Layout from "../components/Layout";
 import config from "../config";
 import SelfServiceForm from "../components/Form/SelfServiceForm";
 import authServerSideProps from "../services/authServerSideProps";
 
-const kratos = new PublicApi(new Configuration({ basePath: config.kratos.public }));
+const kratos = new V0alpha2Api(new Configuration({ basePath: config.kratos.public }));
 
 export const getServerSideProps = authServerSideProps(async (context) => {
   const flow = context.query.flow;
@@ -26,9 +26,7 @@ export const getServerSideProps = authServerSideProps(async (context) => {
   }
 
   try {
-    const { status, data } = await kratos.getSelfServiceSettingsFlow(flow, {
-      headers: { cookie: context.req.headers.cookie },
-    });
+    const { status, data } = await kratos.getSelfServiceSettingsFlow(flow, context.req.getHeader("Cookie"));
 
     if (status === 200) return { props: { flow: data } };
 

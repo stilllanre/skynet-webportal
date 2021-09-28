@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { Configuration, PublicApi } from "@ory/kratos-client";
+import { Configuration, V0alpha2Api } from "@ory/kratos-client";
 import { getIn } from "formik";
 import config from "../../config";
 import levenshtein from "fast-levenshtein";
 import lcs from "../../services/longestCommonSequence";
 import SelfServiceForm from "../../components/Form/SelfServiceForm";
 
-const kratos = new PublicApi(new Configuration({ basePath: config.kratos.public }));
+const kratos = new V0alpha2Api(new Configuration({ basePath: config.kratos.public }));
 
 export async function getServerSideProps(context) {
   const flow = context.query.flow;
@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const { status, data } = await kratos.getSelfServiceRegistrationFlow(flow);
+    const { status, data } = await kratos.getSelfServiceRegistrationFlow(flow, context.req.getHeader("Cookie"));
 
     if (status === 200) return { props: { flow: data } };
 
