@@ -69,21 +69,17 @@ const fieldsConfig = {
     checks: [
       {
         label: "At least 6 characters long",
-        validate: (values, field) => {
-          const value = getIn(values, field);
+        validate: (values) => {
+          const value = getIn(values, "password");
 
           return value && value.length > 5;
         },
       },
       {
         label: "Significantly different from the email",
-        validate: (values, field) => {
-          const value = getIn(values, field);
+        validate: (values) => {
+          const value = getIn(values, "password");
           const email = getIn(values, "traits.email");
-
-          console.log(value, email, values, field);
-
-          return value && email;
 
           // levenshtein distance higher than 5 and longest common sequence shorter than half of the password
           return value && email && levenshtein.get(value, email) > 5 && lcs(value, email).length / value.length <= 0.5;
