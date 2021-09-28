@@ -1,36 +1,38 @@
 import { useFormik, getIn, setIn } from "formik";
 import classnames from "classnames";
+import { merge } from "lodash";
 import SelfServiceMessages from "./SelfServiceMessages";
 
-export default function SelfServiceForm({ flow, config, fieldsConfig, title, button = "Submit" }) {
-  const fields = config.fields
-    .filter((field) => !field.name.startsWith("traits.name")) // drop name fields
-    .map((field) => ({ ...field, ...fieldsConfig[field.name] }))
-    .sort((a, b) => (a.position < b.position ? -1 : 1));
+export default function SelfServiceForm({ flow, fieldsConfig, title, button = "Submit" }) {
+  const fields = flow.ui.nodes
+    .filter((field) => !field.attributes.name.startsWith("traits.name") && field.attributes.type !== "submit") // drop name fields
+    .map((field) => merge({}, field, fieldsConfig[field.attributes.name]))
+    .sort((a, b) => (a.attributes.position < b.attributes.position ? -1 : 1));
   const formik = useFormik({
-    initialValues: fields.reduce((acc, field) => setIn(acc, field.name, field.value ?? ""), {}),
+    initialValues: fields.reduce((acc, field) => setIn(acc, field.attributes.name, field.attributes.value ?? ""), {}),
   });
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       {title && <h3 className="pb-5 text-lg leading-6 font-medium text-gray-900">{title}</h3>}
       <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-        <form className="space-y-6" action={config.action} method={config.method}>
+        <form className="space-y-6" action={flow.ui.action} method={flow.ui.method}>
           {fields.map((field) => (
-            <div key={field.name} className={classnames({ hidden: field.type === "hidden" })}>
-              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-1">
-                {fieldsConfig[field.name]?.label ?? field.name}
+            <div key={field.attributes.name} className={classnames({ hidden: field.attributes.type === "hidden" })}>
+              <label htmlFor={field.attributes.name} className="block text-sm font-medium text-gray-700 mb-1">
+                {field.meta.label?.text ?? field.attributes.name}
               </label>
               <div>
                 <input
-                  id={field.type === "hidden" ? null : field.name}
-                  name={field.name}
-                  type={field.type}
-                  autoComplete={field.autoComplete}
-                  required={field.required}
+                  id={field.attributes.type === "hidden" ? null : field.attributes.name}
+                  name={field.attributes.name}
+                  type={field.attributes.type}
+                  disabled={field.attributes.disabled}
+                  autoComplete={field.attributes.autoComplete}
+                  required={field.attributes.required}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={getIn(formik.values, field.name) ?? ""}
+                  value={getIn(formik.values, field.attributes.name) ?? ""}
                   className={classnames(
                     "appearance-none block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none sm:text-sm",
                     {
@@ -93,8 +95,6 @@ export default function SelfServiceForm({ flow, config, fieldsConfig, title, but
           >
             {button}
           </button>
-
-          <SelfServiceMessages messages={config.messages} />
 
           {flow && <SelfServiceMessages messages={flow.messages} />}
         </form>

@@ -1,45 +1,56 @@
 {
-  "id": "bda73c77-1e21-4bfd-b85a-322fce2e4576",
-  "expires_at": "2020-01-28T13:48:04.690715Z",
-  "issued_at": "2020-01-28T13:38:04.690732Z",
-  "request_url": "http://127.0.0.1:4455/auth/browser/login",
-  "methods": {
-    "oidc": {
-      "method": "oidc",
-      "config": {
-        "action": "http://127.0.0.1:4455/.ory/kratos/public/auth/browser/methods/oidc/auth/bda73c77-1e21-4bfd-b85a-322fce2e4576",
-        "method": "POST",
-        "fields": [
-          {
-            "name": "csrf_token",
-            "type": "hidden",
-            "required": true,
-            "value": "QJreyXtUD4oUSJfGNjA/+6ydsQyq0o/rfTL6QK86VadVFg6mwgX5x1QHVQ6uRqKxmwAcavQup3ILCSwl7ke97g=="
-          }
-        ]
+  "id": "73106a14-0682-4fe2-a13f-44c118034c00",
+  "type": "browser",
+  "expires_at": "2021-09-28T17:25:11.934527Z",
+  "issued_at": "2021-09-28T17:15:11.934527Z",
+  "request_url": "http://oathkeeper:4455/self-service/login/browser?return_to=%2Fapi%2Faccounts%2Flogin%3Freturn_to%3D%2F",
+  "ui": {
+    "action": "https://account.siasky.dev/.ory/kratos/public/self-service/login?flow=73106a14-0682-4fe2-a13f-44c118034c00",
+    "method": "POST",
+    "nodes": [
+      {
+        "type": "input",
+        "group": "default",
+        "attributes": {
+          "name": "csrf_token",
+          "type": "hidden",
+          "value": "6taL4medd9e/wpsP4rmxjZk4OutReXWCe2HX9rb5lTVczNkO3ENDmsdAK8fBs90Fxh+wPyQSt88GV/f3WNqPHA==",
+          "required": true,
+          "disabled": false
+        },
+        "messages": [],
+        "meta": {}
+      },
+      {
+        "type": "input",
+        "group": "password",
+        "attributes": {
+          "name": "password_identifier",
+          "type": "text",
+          "value": "",
+          "required": true,
+          "disabled": false
+        },
+        "messages": [],
+        "meta": { "label": { "id": 1070004, "text": "ID", "type": "info" } }
+      },
+      {
+        "type": "input",
+        "group": "password",
+        "attributes": { "name": "password", "type": "password", "required": true, "disabled": false },
+        "messages": [],
+        "meta": { "label": { "id": 1070001, "text": "Password", "type": "info" } }
+      },
+      {
+        "type": "input",
+        "group": "password",
+        "attributes": { "name": "method", "type": "submit", "value": "password", "disabled": false },
+        "messages": [],
+        "meta": { "label": { "id": 1010001, "text": "Sign in", "type": "info", "context": {} } }
       }
-    },
-    "password": {
-      "method": "password",
-      "config": {
-        "action": "http://127.0.0.1:4455/.ory/kratos/public/auth/browser/methods/password/login?request=bda73c77-1e21-4bfd-b85a-322fce2e4576",
-        "method": "POST",
-        "fields": [
-          {
-            "name": "csrf_token",
-            "type": "hidden",
-            "required": true,
-            "value": "M1gAKA8fIhw4JOpQ/5m9mKARBAvKhzWkyhbxjtZNLG8m1NBHtk7UUXhrKJhn7yDSl4ypbZR7HT28LSfrlzDEJg=="
-          },
-          { "name": "identifier", "type": "text", "required": true, "value": "asfdasdffads" },
-          { "name": "password", "type": "password", "required": true }
-        ],
-        "errors": [
-          {
-            "message": "The provided credentials are invalid. Check for spelling mistakes in your password or username, email address, or phone number."
-          }
-        ]
-      }
-    }
-  }
+    ]
+  },
+  "created_at": "2021-09-28T17:15:11.935936Z",
+  "updated_at": "2021-09-28T17:15:11.935936Z",
+  "forced": false
 }

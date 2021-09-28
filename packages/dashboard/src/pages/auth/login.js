@@ -42,15 +42,27 @@ export async function getServerSideProps(context) {
 }
 
 const fieldsConfig = {
-  identifier: {
-    label: "Email address",
-    autoComplete: "email",
-    position: 0,
+  password_identifier: {
+    meta: {
+      label: {
+        text: "Email address",
+      },
+    },
+    attributes: {
+      autoComplete: "email",
+      position: 0,
+    },
   },
   password: {
-    label: "Password",
-    autoComplete: "current-password",
-    position: 1,
+    meta: {
+      label: {
+        text: "Password",
+      },
+    },
+    attributes: {
+      autoComplete: "current-password",
+      position: 1,
+    },
   },
   csrf_token: {
     position: 99,
@@ -59,8 +71,6 @@ const fieldsConfig = {
 
 export default function Login({ flow }) {
   console.log(flow);
-
-  return null;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -88,7 +98,7 @@ export default function Login({ flow }) {
         </p>
       </div>
 
-      <SelfServiceForm flow={flow} config={flow.methods.password.config} fieldsConfig={fieldsConfig} button="Sign in" />
+      <SelfServiceForm flow={flow} fieldsConfig={fieldsConfig} button="Sign in" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center mt-2">
         <Link href="/recovery">

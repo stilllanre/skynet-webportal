@@ -15,7 +15,7 @@ export default function authServerSideProps(getServerSideProps) {
 
     if (getServerSideProps) {
       const api = ky.create({
-        headers: { cookie: context.req.getHeaders.cookie },
+        headers: { cookie: context.req.headers.cookie },
         prefixUrl: isProduction ? "http://oathkeeper:4455" : "http://localhost:3000/api/stubs",
       });
 

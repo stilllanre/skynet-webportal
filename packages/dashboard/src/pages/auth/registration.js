@@ -46,14 +46,26 @@ export async function getServerSideProps(context) {
 
 const fieldsConfig = {
   "traits.email": {
-    label: "Email address",
-    autoComplete: "email",
-    position: 0,
+    meta: {
+      label: {
+        text: "Email address",
+      },
+    },
+    attributes: {
+      autoComplete: "email",
+      position: 0,
+    },
   },
   password: {
-    label: "Password",
-    autoComplete: "new-password",
-    position: 1,
+    meta: {
+      label: {
+        text: "Password",
+      },
+    },
+    attributes: {
+      autoComplete: "new-password",
+      position: 1,
+    },
     checks: [
       {
         label: "At least 6 characters long",
@@ -81,6 +93,8 @@ const fieldsConfig = {
 };
 
 export default function Registration({ flow }) {
+  console.log(flow);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -107,7 +121,7 @@ export default function Registration({ flow }) {
         </p>
       </div>
 
-      <SelfServiceForm flow={flow} config={flow.methods.password.config} fieldsConfig={fieldsConfig} button="Sign up" />
+      <SelfServiceForm flow={flow} fieldsConfig={fieldsConfig} button="Sign up" />
     </div>
   );
 }
