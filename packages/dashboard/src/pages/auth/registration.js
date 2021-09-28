@@ -93,11 +93,8 @@ const fieldsConfig = {
   },
   method: {
     attributes: {
-      hidden: true,
+      type: "hidden",
     },
-  },
-  csrf_token: {
-    position: 99,
   },
 };
 
