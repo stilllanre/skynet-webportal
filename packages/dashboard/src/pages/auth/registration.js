@@ -81,6 +81,8 @@ const fieldsConfig = {
           const value = getIn(values, field);
           const email = getIn(values, "traits.email");
 
+          console.log(value, email, values, field);
+
           return value && email;
 
           // levenshtein distance higher than 5 and longest common sequence shorter than half of the password
