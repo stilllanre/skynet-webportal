@@ -26,12 +26,16 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const { status, data } = await kratos.getSelfServiceLoginFlow(flow, context.req.getHeader("Cookie"));
+    const { status, data, ...props } = await kratos.getSelfServiceLoginFlow(flow, context.req.getHeader("Cookie"));
 
     if (status === 200) return { props: { flow: data } };
 
+    console.log(status, data, props);
+
     throw new Error(`Failed to retrieve flow ${flow} with code ${status}`);
   } catch (error) {
+    console.log(">>>", error);
+
     return {
       redirect: {
         permanent: false,
