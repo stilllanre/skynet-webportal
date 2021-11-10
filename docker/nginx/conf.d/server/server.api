@@ -166,7 +166,7 @@ location /skynet/registry/subscription {
     proxy_set_header Connection "Upgrade";
     proxy_set_header Host $host;
 
-    proxy_pass http://sia:9980/skynet/registry/subscription?bandwidthlimit=$bandwidthlimit0&notificationdelay=$notificationdelay;
+    proxy_pass http://sia:9980/skynet/registry/subscription?bandwidthlimit=$bandwidthlimit&notificationdelay=$notificationdelay;
 }
 
 location /skynet/skyfile {
