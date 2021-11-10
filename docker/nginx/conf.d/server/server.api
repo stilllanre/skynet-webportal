@@ -137,7 +137,7 @@ location /skynet/registry/subscription {
     set $bandwidthlimit "0";
     set $notificationdelay "0";
 
-    access_by_lua_block {
+    rewrite_by_lua_block {
         -- this block runs only when accounts are enabled
         if os.getenv("ACCOUNTS_ENABLED") ~= "true" then return end
 
