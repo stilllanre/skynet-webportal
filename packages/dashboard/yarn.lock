@@ -2657,10 +2657,10 @@ strip-ansi@6.0.1:
   dependencies:
     ansi-regex "^5.0.1"
 
-stripe@8.186.1:
-  version "8.186.1"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.186.1.tgz#fb717cfcb8c2e73c91e3873dc286f3e8442bfb65"
-  integrity sha512-BBByVyqKEBY2GNQDLmfwL1RtfsPmjForD+up7tu+P7KYxxvwEzF1gM2Iv4npfOQevGaBmR70sxIWRwn7utS5pg==
+stripe@8.191.0:
+  version "8.191.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.191.0.tgz#7bb56080dce2e2e9cc4f52dc05792626ea46bfd6"
+  integrity sha512-3oyuIbuW3WDsbGnMUtIZPkr+sOUJ3NEtEwghd81ZuWc+Tq09MrgWXGekbVnbxA3TMFwfKOILw6QoiPA7za4JUg==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"
